@@ -128,6 +128,13 @@ static const struct provider_def DEFS[] = {
         .parse_model = deepseek_parse_model,
         .query_usage = deepseek_query_usage,
     },
+    {
+        .id = "minimax",
+        .display_name = "MiniMax",
+        .base_url = "https://api.minimax.io/v1",
+        .api_key_env = "MINIMAX_API_KEY",
+        .catalog_id = "minimax",
+    },
     /* Local servers. */
     {
         /* Dot-free so the id names its providers.llamacpp config block ('.' is the config key

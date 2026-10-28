@@ -7,6 +7,11 @@ notes (see [docs/releasing.md](docs/releasing.md)).
 
 ## [Unreleased]
 
+### Added
+
+- MiniMax provider (`minimax`) with global and China endpoint configuration for Chat Completions
+  and Messages APIs.
+
 ### Changed
 
 - Prompts are sent without leading blank lines or trailing whitespace, so a paste or Ctrl+G edit

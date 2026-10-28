@@ -26,6 +26,7 @@ keys in environment variables rather than command arguments or `config.json`.
 | `opencode-zen` | Curated pay-as-you-go models | `OPENCODE_API_KEY`; choose a model. |
 | `opencode-go` | OpenCode's model subscription | `OPENCODE_API_KEY`; choose a model. |
 | `deepseek` | Direct DeepSeek API | `DEEPSEEK_API_KEY`; choose a model. |
+| `minimax` | Direct MiniMax API | `MINIMAX_API_KEY`; choose a model. |
 | `llama.cpp` | Local `llama-server` | Start the server; model is normally discovered. |
 | `ollama` | Local Ollama models | Start `ollama serve`; choose a pulled model. |
 | `openai-compatible` | OpenAI Chat Completions-compatible endpoint | Base URL; usually choose a model. |
@@ -171,6 +172,34 @@ hax --provider=deepseek --model=deepseek-flash
 DeepSeek may train on what you send, code included, and stores it in China. Review its
 [privacy policy](https://cdn.deepseek.com/policies/en-US/deepseek-privacy-policy.html) and training
 opt-out before sending proprietary code.
+
+## MiniMax
+
+```sh
+export MINIMAX_API_KEY=...
+hax --provider=minimax --model=MiniMax-M3.1-Flash
+```
+
+The default endpoint is the global Chat Completions API. `MiniMax-M3.1-Flash` and `MiniMax-M3`
+both support text, image, and video input with a one-million-token context window. Model metadata,
+including current pricing and reasoning controls, comes from the catalog.
+
+To use the Anthropic Messages API or the China endpoints, override the provider protocol and base
+URL in `config.json`:
+
+```json
+{
+  "providers": {
+    "minimax": {
+      "api": "anthropic-messages",
+      "base_url": "https://api.minimax.io/anthropic"
+    }
+  }
+}
+```
+
+Use `https://api.minimaxi.com/v1` for the China Chat Completions API or
+`https://api.minimaxi.com/anthropic` for the China Messages API.
 
 ## llama.cpp
 
