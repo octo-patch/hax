@@ -246,4 +246,30 @@ hax_exe = executable('hax',
     install: true,
 )
 
+python = import('python').find_installation()
+
+# Man pages rendered from docs/ by scripts/md2man.py, which owns the page list and checks this
+# output list against it. meson itself runs on Python, so the pages cost no extra dependency.
+custom_target('man',
+    input: 'scripts/md2man.py',
+    output: ['hax.1', 'hax-config.5', 'hax-sessions.5', 'hax-providers.7'],
+    depend_files: files(
+        'CHANGELOG.md',
+        'docs/configuration.md',
+        'docs/man/hax.1.md',
+        'docs/providers.md',
+        'docs/sessions.md',
+        'docs/usage.md',
+    ),
+    command: [python, '@INPUT@', meson.project_version(), '@OUTPUT@'],
+    build_by_default: true,
+    install: true,
+    install_dir: [
+        get_option('mandir') / 'man1',
+        get_option('mandir') / 'man5',
+        get_option('mandir') / 'man5',
+        get_option('mandir') / 'man7',
+    ],
+)
+
 subdir('tests')

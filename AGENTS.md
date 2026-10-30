@@ -190,6 +190,9 @@ Where a test goes:
 - Avoid non-portable kernel idioms: no `likely()`/`unlikely()`, `BUG_ON`, `ERR_PTR`, or
   `kmalloc`. Use `<stdint.h>` types and plain negative-int returns plus `errno`.
 - Markdown is hard-wrapped around 100 columns, same as code.
+- The user docs listed in `scripts/md2man.py`'s `PAGES` also ship as man pages, so write them for a
+  reader without the repository: no repo-relative paths, links only to other rendered docs. The
+  build fails on Markdown outside the subset that script renders.
 - Before changing code in any language, read [`docs/code-style.md`](docs/code-style.md) and apply
   its general naming, structure, and comment principles using that language's conventions.
 
