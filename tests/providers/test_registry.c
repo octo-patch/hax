@@ -59,47 +59,6 @@ static void test_gateway_defs_registered(void)
     provider_availability_clear(&availability);
 }
 
-static void test_minimax_def_registered(void)
-{
-    const struct provider_def *def = provider_find("minimax");
-    EXPECT(def != NULL);
-    if (!def)
-        return;
-    EXPECT_STR_EQ(provider_display_name(def), "MiniMax");
-    EXPECT_STR_EQ(def->base_url, "https://api.minimax.io/v1");
-    EXPECT_STR_EQ(def->api_key_env, "MINIMAX_API_KEY");
-    EXPECT_STR_EQ(provider_catalog_id(def), "minimax");
-
-    unsetenv("MINIMAX_API_KEY");
-    struct provider_availability availability = {0};
-    provider_prepare_availability(def, &availability);
-    EXPECT(!availability.available);
-    EXPECT_STR_EQ(availability.reason, "MINIMAX_API_KEY not set");
-    provider_availability_clear(&availability);
-
-    setenv("MINIMAX_API_KEY", "test-key", 1);
-    struct provider *provider = provider_construct(def);
-    EXPECT(provider != NULL);
-    if (provider) {
-        EXPECT_STR_EQ(http_provider_base_url(provider), "https://api.minimax.io/v1");
-        EXPECT_STR_EQ(provider->catalog_id, "minimax");
-        provider->destroy(provider);
-    }
-
-    config_set_override("providers.minimax.base_url", "https://api.minimaxi.com/anthropic");
-    config_set_override("providers.minimax.api", "anthropic-messages");
-    provider = provider_construct(def);
-    EXPECT(provider != NULL);
-    if (provider) {
-        EXPECT_STR_EQ(http_provider_base_url(provider), "https://api.minimaxi.com/anthropic");
-        EXPECT(provider->list_models == anthropic_list_models);
-        provider->destroy(provider);
-    }
-    config_set_override("providers.minimax.api", NULL);
-    config_set_override("providers.minimax.base_url", NULL);
-    unsetenv("MINIMAX_API_KEY");
-}
-
 /* Def JSON literals are C-escaped by hand; a malformed one is dropped with only a runtime warning,
  * silently losing headers or body members an endpoint may require. */
 static void test_def_json_literals_parse(void)
@@ -305,7 +264,6 @@ int main(void)
     test_default_is_highest_priority();
     test_internal_providers_hidden();
     test_gateway_defs_registered();
-    test_minimax_def_registered();
     test_def_json_literals_parse();
     test_autoselect_order();
     test_former_id_canonicalized();

@@ -68,9 +68,9 @@ response, so any `~$` amount is an API-equivalent estimate from model metadata, 
 the subscription.
 
 Codex serves some models a smaller default context window than they support — the `/model` picker
-shows the sanctioned ceiling as "272k context (up to 872k)". A
-[`catalog.models`](./configuration.md#model-metadata) override raises the window for
-one model; keying the block `codex` leaves the `openai` provider alone:
+shows the sanctioned ceiling as "272k context (up to 872k)". A `catalog.models` override (see
+Model metadata in [configuration.md](./configuration.md#model-metadata)) raises the window for one
+model; keying the block `codex` leaves the `openai` provider alone:
 
 ```json
 {
@@ -116,8 +116,8 @@ hax --provider=openrouter --model=anthropic/claude-sonnet-5
 Turn stats and `/session` show the cost OpenRouter reports; `/usage` shows API key spend and
 available credits.
 
-The [transcript](debugging.md#transcript-log) reports the upstream endpoint OpenRouter routed each
-response to, which is how to confirm that `extra_body` routing preferences took effect.
+The transcript (Ctrl-T, or the `HAX_TRANSCRIPT` file) reports the upstream endpoint OpenRouter
+routed each response to, which is how to confirm that `extra_body` routing preferences took effect.
 
 By default hax sends app attribution (`HTTP-Referer`, `X-Title`, `X-OpenRouter-Categories`) and
 the conversation id as `x-session-id`, which OpenRouter uses for sticky routing and to group the
@@ -180,26 +180,8 @@ export MINIMAX_API_KEY=...
 hax --provider=minimax --model=MiniMax-M3.1-Flash
 ```
 
-The default endpoint is the global Chat Completions API. `MiniMax-M3.1-Flash` and `MiniMax-M3`
-both support text, image, and video input with a one-million-token context window. Model metadata,
-including current pricing and reasoning controls, comes from the catalog.
-
-To use the Anthropic Messages API or the China endpoints, override the provider protocol and base
-URL in `config.json`:
-
-```json
-{
-  "providers": {
-    "minimax": {
-      "api": "anthropic-messages",
-      "base_url": "https://api.minimax.io/anthropic"
-    }
-  }
-}
-```
-
-Use `https://api.minimaxi.com/v1` for the China Chat Completions API or
-`https://api.minimaxi.com/anthropic` for the China Messages API.
+MiniMax Token Plan keys (`sk-cp-...`) work with the same setup. The cost hax displays is a
+pay-as-you-go estimate, not a Token Plan charge.
 
 ## llama.cpp
 
@@ -363,8 +345,8 @@ Advanced fields depend on the protocol:
 | `openai-responses` | `send_cache_key` |
 | `anthropic-messages` | `max_tokens`, `thinking_mode`, `thinking_budget`, `cache`, `cache_ttl`, `version` |
 
-Their values and defaults are listed under
-[Provider settings](./configuration.md#provider-settings). Leave them unset unless the endpoint
+Their values and defaults are listed under Provider settings in
+[configuration.md](./configuration.md#provider-settings). Leave them unset unless the endpoint
 documents a need; selecting a provider warns about block members hax does not recognize or that its
 `api` does not use.
 
@@ -407,7 +389,10 @@ survives restarts, while `/new` starts a fresh one — for gateways that route o
   "providers": {
     "openrouter": {
       "extra_body": {
-        "provider": { "order": ["baseten"], "allow_fallbacks": false }
+        "provider": {
+          "order": ["baseten"],
+          "allow_fallbacks": false
+        }
       }
     },
     "gateway": {
@@ -432,12 +417,14 @@ literally into a header value — one more reason to prefer `$VAR`.
 
 ## Mock provider
 
-`mock` is a development backend with no network or model. It is hidden from auto-selection and the
-provider picker but can be selected explicitly:
+`mock` is a development backend with no network or model; without a script it echoes the prompt
+back. It is hidden from auto-selection and the provider picker but can be selected explicitly,
+which is handy for trying the interface or the `--json` stream without credentials:
 
 ```sh
 HAX_PROVIDER=mock hax
-HAX_PROVIDER=mock HAX_MOCK_SCRIPT=scripts/mock/demo.txt hax
 ```
 
-See [Troubleshooting and development diagnostics](./debugging.md#mock-provider) for its script format.
+Mock runs record no session unless `HAX_NO_SESSION=0` is set. `HAX_MOCK_SCRIPT` names a script of
+canned turns to replay instead; the format is described in `docs/debugging.md` in the hax source
+tree.

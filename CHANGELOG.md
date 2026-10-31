@@ -9,8 +9,9 @@ notes (see [docs/releasing.md](docs/releasing.md)).
 
 ### Added
 
-- MiniMax provider (`minimax`) with global and China endpoint configuration for Chat Completions
-  and Messages APIs.
+- MiniMax provider (`minimax`).
+- Man pages for offline reference: `man hax` for usage, plus `hax-config(5)`, `hax-sessions(5)`,
+  and `hax-providers(7)`. Packages and source builds install them; the prebuilt binaries do not.
 
 ### Changed
 

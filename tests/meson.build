@@ -189,7 +189,6 @@ e2e_scenarios = [
     'repl_status_tools',
 ]
 
-python = find_program('python3')
 e2e_env = environment({'HAX_BIN': hax_exe.full_path()})
 e2e_env.prepend('TSAN_OPTIONS', 'atexit_sleep_ms=0', separator: ':')
 foreach name : e2e_scenarios
